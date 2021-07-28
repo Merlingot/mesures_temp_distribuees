@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import glob
 import plotly.graph_objects as go
 from graph import temp_at_time, temp_at_pos, mean_pos, traces
@@ -36,8 +35,6 @@ def read_files_dts(files):
     read_1by1(files, dateArr, tempMat, headerDTS)
     tdeltaArr = np.array(list(map(lambda x: x - dateArr.min() , dateArr.copy())))
     return dateArr, tempMat, posArr, tdeltaArr
-
-
 
 
 
