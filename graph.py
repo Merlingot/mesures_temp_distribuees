@@ -1,11 +1,10 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
-# import pandas as pd
 from plotly.subplots import make_subplots
 
 
-def traces(posArr, tempArr, tdeltaArr, dateArr):
+def traces(posArr, tempMat, tdeltaArr, dateArr):
 
     fig=go.Figure()
     POS_AXIS=1
