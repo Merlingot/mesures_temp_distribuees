@@ -5,6 +5,82 @@ from plotly.subplots import make_subplots
 from scipy.signal import correlate
 
 
+def fig_pos(*appareils):
+    POS_AXIS=1
+    fig=go.Figure()
+
+    v = []
+    for appareil in appareils:
+        name = appareil[0]
+
+        if 'datalog' in name:
+            name, date, temp, tdelta = appareil
+            line=go.Line(x=date, y=temp, visible=True, name = name)
+        else:
+            _, date, temp, pos, tdelta  = appareil
+            # line=go.Line(x=date, y=np.nanmean(temp,axis=POS_AXIS), visible=True, name = name)
+            line=go.Line(x=date, y=temp, visible=True, name = name)
+
+        fig.add_traces([line])
+        v.append(False)
+
+    fig.show()
+
+    i = 0
+    boutons = []
+    for appareil in appareils:
+        name = appareil[0]
+        v_i = v.copy()
+        v_i[i]=True
+        boutons.append(
+            dict(
+                label=name,
+                method="update",
+                args=[  {"visible": v_i},
+                    {"title": name}
+                ])
+                )
+        i+=1
+
+    boutons.append(
+        dict(
+            label='all',
+            method="update",
+            args=[  {"visible": [True]*len(v)},
+                {"title": 'all'}
+            ])
+            )
+
+    fig.update_layout(
+             title='Température moyenne (dans la fibre) en fonction du temps',
+             width=1000,
+             height=600,
+             xaxis_title='Date',
+             yaxis_title='Température (°C)',
+    )
+
+
+
+    fig.update_layout(
+        updatemenus=[
+            dict(
+                active=0,
+                buttons=list(boutons ),
+            )
+        ])
+
+    # Add range slider
+    fig.update_layout(
+        xaxis=
+        dict(
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
+        )
+    )
+    return fig
+
 def temp_at_pos(pos,temp,time,dates, signal):
     # formatage
     nb_time=len(dates)
@@ -300,8 +376,8 @@ def surface_plot(posArr,tempMat,timeArr,dateArr):
 
     fig.update_layout(
              title='Surface température en fonction de la date (y) et de la position (x)',
-             width=600,
-             height=600,
+             width=1500,
+             height=1500,
              scene=dict(
              xaxis_title='Position (m)',
              zaxis_title='Température (°C)',

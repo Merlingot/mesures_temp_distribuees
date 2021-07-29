@@ -5,24 +5,31 @@ from read_files_DTS import read_files_dts
 from read_files_datalog import read_datalogger
 from read_files_DSTS import read_files_dsts
 
-from graph import moy_pos,mean_pos,temp_at_time,temp_at_pos,surface_plot,traces
+from graph import moy_pos,mean_pos,temp_at_time,temp_at_pos,surface_plot,traces, fig_pos
 
 file='data/28_07_2021/datalog.csv'
 dateArr, tempArr, tdeltaArr = read_datalogger(file)
 a1 = ['datalog1', dateArr, tempArr, tdeltaArr]
 
+
 files_dts = np.sort(glob.glob('data/28_07_2021/data_juin_juil/Fibre 01 /2021/*.txt'))
 dateArr, tempMat, posArr, tdeltaArr = read_files_dts(files_dts)
 a2 = ['dts01', dateArr, tempMat, posArr, tdeltaArr ]
+a2_ = ['dts01', dateArr, tempMat[:,0], posArr, tdeltaArr ]
 
 files_dts = np.sort(glob.glob('data/28_07_2021/data_juin_juil/Fibre 02/2021/*.txt'))
 dateArr, tempMat, posArr, tdeltaArr = read_files_dts(files_dts)
+posArr = posArr.max() - posArr
 a3 = ['dts02', dateArr, tempMat, posArr, tdeltaArr ]
-
+a3_ = ['dts02', dateArr, tempMat[:,0], posArr, tdeltaArr ]
 
 # FIGURE 0 : TOUS LES PROFILS DE TEMPÉRATURE
-moy_pos(a1, a2, a3)
+f = moy_pos(a1, a2, a3)
+f.show()
 
+# FIGURE 0 : TOUS LES PROFILS DE TEMPÉRATURE
+f = fig_pos(a1, a2_, a3_)
+f.show()
 # FIGURE 1 : PROFIL DE TEMPÉRATURE EN FONCTION DU TEMPS, MOYENNE SUR LA LONGUEUR DE LA FIBRE
 f = mean_pos(dateArr, tempMat)
 f.show()
