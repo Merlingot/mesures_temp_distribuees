@@ -2,6 +2,134 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 from plotly.subplots import make_subplots
+from scipy.signal import correlate
+
+
+def temp_at_pos(pos,temp,time,dates, signal):
+    # formatage
+    nb_time=len(dates)
+    nb_pos=len(pos)
+    # température maximale
+    Tmax = np.nanmax(temp)
+    Tmin =  np.nanmin(temp)
+
+    fig=go.Figure()
+    lines=[go.Line(x=dates, y=temp[:,k],visible=False) for k in range(nb_pos)]
+    fig.add_traces(lines)
+    lines=[go.Line(x=dates, y=correlate(temp[:,k],signal), visible=False) for k in range(nb_pos)]
+    fig.add_traces(lines)
+
+    N = int(len(fig.data)/2)-1
+    fig.data[0]['visible']=True
+    fig.data[N+0]['visible']=True
+
+    steps = []
+    for i in range(0,len(fig.data)):
+        step = dict(
+            method = 'restyle',
+            args = ['visible', [False] * len(fig.data)],
+            label='{:.1f}'.format(pos[i]),
+        )
+        step['args'][1][i] = True # Toggle i'th trace to "visible"
+        step['args'][1][i+N] = True # Toggle i'th trace to "visible"
+        steps.append(step)
+
+    sliders = [dict(
+        active = 0,
+        currentvalue = {"prefix": "Position: "},
+        steps = steps,
+        pad={"t": 100}
+    )]
+
+    fig.update_layout(
+             title='Température à la position X en fonction du temps',
+             width=600,
+             height=600,
+             xaxis_title='Temps écoulé (h)',
+             yaxis_title='Température (°C)',
+             xaxis=dict(range=[dates.item(0), dates.item(-1)], autorange=True),
+             yaxis=dict(range=[Tmin, Tmax], autorange=False),
+             sliders=sliders
+    )
+
+    return fig
+
+
+
+def moy_pos(*appareils):
+    POS_AXIS=1
+    fig=go.Figure()
+
+    v = []
+    for appareil in appareils:
+        name = appareil[0]
+
+        if 'datalog' in name:
+            name, date, temp, tdelta = appareil
+            line=go.Line(x=date, y=temp, visible=True, name = name)
+        else:
+            _, date, temp, pos, tdelta  = appareil
+            line=go.Line(x=date, y=np.nanmean(temp,axis=POS_AXIS), visible=True, name = name)
+
+        fig.add_traces([line])
+        v.append(False)
+
+    fig.show()
+
+    i = 0
+    boutons = []
+    for appareil in appareils:
+        name = appareil[0]
+        v_i = v.copy()
+        v_i[i]=True
+        boutons.append(
+            dict(
+                label=name,
+                method="update",
+                args=[  {"visible": v_i},
+                    {"title": name}
+                ])
+                )
+        i+=1
+
+    boutons.append(
+        dict(
+            label='all',
+            method="update",
+            args=[  {"visible": [True]*len(v)},
+                {"title": 'all'}
+            ])
+            )
+
+    fig.update_layout(
+             title='Température moyenne (dans la fibre) en fonction du temps',
+             width=1000,
+             height=600,
+             xaxis_title='Date',
+             yaxis_title='Température (°C)',
+    )
+
+
+
+    fig.update_layout(
+        updatemenus=[
+            dict(
+                active=0,
+                buttons=list(boutons ),
+            )
+        ])
+
+    # Add range slider
+    fig.update_layout(
+        xaxis=
+        dict(
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
+        )
+    )
+    return fig
 
 
 def traces(posArr, tempMat, tdeltaArr, dateArr):
@@ -45,6 +173,7 @@ def mean_pos(dateArr, tempMat):
         )
     )
     return fig
+
 
 def temp_at_time(pos, temp, time, dates):
 
@@ -90,7 +219,6 @@ def temp_at_time(pos, temp, time, dates):
     )
 
     return fig
-
 
 def temp_at_pos(pos,temp,time,dates):
     # formatage

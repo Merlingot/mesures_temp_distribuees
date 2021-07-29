@@ -1,6 +1,5 @@
 import numpy as np
 import glob
-import plotly.graph_objects as go
 from graph import temp_at_time, temp_at_pos, mean_pos, traces, surface_plot
 
 
@@ -38,26 +37,27 @@ def read_files_dts(files):
 
 
 
-# dts (LIOS) -------------------------------------------------------------------
-files_dts = np.sort(glob.glob('/Users/mariannelado-roy/Desktop/2021/*.txt'))
-dateArr, tempMat, posArr, tdeltaArr = read_files_dts(files_dts)
-
-
-# FIGURE 1 : PROFIL DE TEMPÉRATURE EN FONCTION DU TEMPS, MOYENNE SUR LA LONGUEUR DE LA FIBRE
-f = mean_pos(dateArr, tempMat)
-f.show()
-
-# FIGURE 2 : PROFIL DE TEMPÉRATURE EN FONCTION DE LA POSITION, SLIDER SUR LA DATE
-f = temp_at_time(posArr,tempMat,tdeltaArr,dateArr)
-f.show()
-# FIGURE 3: PROFIL DE TEMPÉRATURE EN FONCTION DE LA DATE, SLIDER SUR LA POSITION
-f = temp_at_pos(posArr,tempMat,tdeltaArr,dateArr)
-f.show()
-
-# FIGURE 4 : SUPERPOSITION DES PROFILS DE TEMPÉRATURE LE LONG DE LA FIBRE, POUR TOUTES LES ACQUISITIONS
-f = traces(posArr,tempMat,tdeltaArr,dateArr)
-f.show()
-
-# FIGURE 5: SURFACE PLOT
-f = surface_plot(posArr,tempMat,tdeltaArr,dateArr)
-f.show()
+# # dts (LIOS) -------------------------------------------------------------------
+# files_dts = np.sort(glob.glob('/Volumes/MARINOUILLE/dts_28_07_2021/data_mai_juil/Controller/4061/Fibre 01/2021/*.txt'))
+#
+# dateArr, tempMat, posArr, tdeltaArr = read_files_dts(files_dts)
+#
+# # FIGURE 1 : PROFIL DE TEMPÉRATURE EN FONCTION DU TEMPS, MOYENNE SUR LA LONGUEUR DE LA FIBRE
+# f = mean_pos(dateArr, tempMat)
+# f.show()
+#
+# # FIGURE 2 : PROFIL DE TEMPÉRATURE EN FONCTION DE LA POSITION, SLIDER SUR LA DATE
+# f = temp_at_time(posArr,tempMat,tdeltaArr,dateArr)
+# f.show()
+#
+# # FIGURE 3: PROFIL DE TEMPÉRATURE EN FONCTION DE LA DATE, SLIDER SUR LA POSITION
+# f = temp_at_pos(posArr,tempMat,tdeltaArr,dateArr)
+# f.show()
+#
+# # FIGURE 4 : SUPERPOSITION DES PROFILS DE TEMPÉRATURE LE LONG DE LA FIBRE, POUR TOUTES LES ACQUISITIONS
+# f = traces(posArr,tempMat,tdeltaArr,dateArr)
+# f.show()
+#
+# # FIGURE 5: SURFACE PLOT
+# f = surface_plot(posArr,tempMat,tdeltaArr,dateArr)
+# f.show()
