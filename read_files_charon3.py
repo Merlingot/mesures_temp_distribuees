@@ -1,16 +1,17 @@
 import numpy as np
 import glob
-from graph import temp_at_time, temp_at_pos, mean_pos, traces, surface_plot
+import pandas as pd
 
+def read_fileN(file, header):
+    with open(file,encoding='ISO-8859-1') as f:
+        date = f.readline()[2:-1]
+    datetime = np.datetime64(date[:10] + 'T' + date[11:11+2] + ':' + date[14:14+2] + ':' + date[17:17+2])
+    temp = np.genfromtxt(file, skip_header=header, usecols=(1), encoding='ISO-8859-1')
+    return datetime, temp
 
-def read_fileN(file,header):
-    temp =  np.genfromtxt(file, skip_header=header+2, max_rows=1,dtype=np.float)[2:]
-    date = np.genfromtxt(file, skip_header=header+1, max_rows=1,usecols=0,dtype=str).astype(np.datetime64).item()
-    return date, temp
-
-def read_file0(file,header):
-    pos = np.genfromtxt(file, skip_header=header, max_rows=1,dtype=np.float)
-    temp =  np.genfromtxt(file, skip_header=header+2, max_rows=1, dtype=np.float)[2:]
+def read_file0(file, header):
+    pos = np.genfromtxt(file, skip_header=header, usecols=(0), encoding='ISO-8859-1')
+    temp = np.genfromtxt(file, skip_header=header, usecols=(1), encoding='ISO-8859-1')
     assert len(temp)==len(pos), 'len(temp):{} != len(pos):{}'.format(len(temp),len(pos))
     return pos
 
@@ -28,8 +29,8 @@ def read_1by1(files, dateArr, tempMat, header):
         dateArr[N] = date
         tempMat[N,:] = temp
 
-def read_files_dts(files):
-    header=8
+def read_files_charon3(files):
+    header=3
     dateArr, tempMat, posArr = init_arrays(files, header)
     read_1by1(files, dateArr, tempMat, header)
     tdeltaArr = np.array(list(map(lambda x: x - dateArr.min() , dateArr.copy())))

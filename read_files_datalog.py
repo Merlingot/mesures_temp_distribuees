@@ -1,6 +1,5 @@
 import numpy as np
-
-from read_files_DTS import read_files_dts
+import pandas as pd
 
 def read_datalogger(file):
     header=11

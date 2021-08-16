@@ -35,6 +35,7 @@ dash = "*"
 jupyter-dash = "*"
 plotly = "*"
 pandas = "*"
+scipy = "*"
 
 [dev-packages]
 
