@@ -36,6 +36,7 @@ jupyter-dash = "*"
 plotly = "*"
 pandas = "*"
 scipy = "*"
+notebook = "*"
 
 [dev-packages]
 
